@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Posts</title>
+
+  <style>
+    .post{
+      background-color: green;
+      padding: 20px;
+      margin: 10px;
+    }
+    body {
+      padding-bottom: 50px;
+    }
+  </style>
+  <script>
+
+    // start with first posts
+    let counter = 1;
+
+    // Load posts 20 at a time
+    const quantity = 40;
+
+    // When DOM loads, render the first 20 posts
+    document.addEventListener('DOMContentLoaded', load);
+
+
+    // If scrolled to bottom, load the next 20 posts
+    window.onscroll = () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        load();
+      }
+    };
+
+    // Load next set of posts
+    function load() {
+
+      // Set start and ed post numbers, and update counter
+      const start = counter;
+      const end = start + quantity - 1;
+      counter = end + 1;
+
+      // Ser new posts and add posts
+      fetch(`/posts/posts?start=${start}&end=${end}`)
+      .then(response => response.json())
+      .then(data => {
+        data.posts.forEach(add_post);
+      });
+    };
+
+    // Add a new posr with given contents in DOM
+    function add_post(contents) {
+
+      // Create a new post
+      const post = document.createElement('div');
+      post.className = 'post';
+      post.innerHTML = contents;
+
+      // Add post to the DOM
+      document.querySelector('#posts').append(post);
+    }
+
+
+  </script>
+</head>
+<body>
+  <div id="posts">
+
+  </div>
+</body>
+</html>
